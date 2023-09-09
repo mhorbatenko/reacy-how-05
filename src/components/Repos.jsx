@@ -4,13 +4,13 @@ import Repo from "./Repo"
 
 
 const Repos = ({repos}) => {
-    console.log(repos)
     return (
         <ul className="popular-list">
             {
                 repos.map(
                     (repo, index) => {
                         return <Repo
+                            key={repo.id}
                             id={repo.id}
                             index={index}
                             avatar_url={repo.owner.avatar_url}

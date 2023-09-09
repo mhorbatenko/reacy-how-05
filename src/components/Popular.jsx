@@ -1,9 +1,8 @@
 
 import { useEffect, useState } from "react"
 import { getLanguagePopularRepos } from "./api"
+import { useSearchParams } from "react-router-dom";
 
-
-import Repo from "./Repo"
 import Repos from "./Repos"
 import Loading from "./Loading"
 
@@ -12,26 +11,32 @@ const languages = ['all', 'javascript', 'python', 'java', 'c', 'go']
 
 const Popular = () => {
 
-    const [selectedLanguageIndex, setSelectedLanguageIndex] = useState(0)
-    const [loading, setLoading] = useState(false)
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const [error, setError] = useState(false)
+    const [currentLanguage, setCurrentLanguage] = useState(searchParams.get("language"));
+
+    const [loading, setLoading] = useState(false)
 
     const [repos, setRepos] = useState([])
 
     useEffect(() => {
         setLoading(true)
-        getLanguagePopularRepos(languages[selectedLanguageIndex])
+        getLanguagePopularRepos(currentLanguage)
             .then(
                 repos => setRepos(repos)
-            )
-            .catch(
-                error => setError(error)
             )
             .finally(
                 () => setLoading(false)
             )
-    }, [selectedLanguageIndex])
+    }, [currentLanguage])
+
+    const handleSelectedLanguage = (index) => {
+        if (loading) {
+            return
+        }
+        setSearchParams({language: languages[index]})
+        setCurrentLanguage(languages[index])
+    }
 
     return (
         <>
@@ -42,8 +47,8 @@ const Popular = () => {
                         (language, index) => (
                             <li
                                 key={index}
-                                style={{ color:  index === selectedLanguageIndex ? '#d0021b': '#000000'}}
-                                onClick={() => setSelectedLanguageIndex(index)}
+                                style={{ color:  languages[index] === currentLanguage ? '#d0021b': '#000000'}}
+                                onClick={() => handleSelectedLanguage(index)}
                             >{language}</li>
                         )
                     )
