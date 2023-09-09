@@ -5,6 +5,7 @@ import { getLanguagePopularRepos } from "./api"
 
 import Repo from "./Repo"
 import Repos from "./Repos"
+import Loading from "./Loading"
 
 const languages = ['all', 'javascript', 'python', 'java', 'c', 'go']
 
@@ -32,11 +33,6 @@ const Popular = () => {
             )
     }, [selectedLanguageIndex])
 
-
-    if (loading) {
-        return <p>Loading ...</p>
-    }
-
     return (
         <>
         <div >
@@ -53,7 +49,9 @@ const Popular = () => {
                     )
                 }
             </ul>
-            <Repos repos={repos} />
+            {
+                loading ? <Loading /> : <Repos repos={repos} />
+            }
         </div>
         </>
     )
